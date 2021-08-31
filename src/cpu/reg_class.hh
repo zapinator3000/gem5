@@ -42,6 +42,7 @@
 #define __CPU__REG_CLASS_HH__
 
 #include <cstddef>
+#include <iterator>
 #include <limits>
 #include <string>
 
@@ -78,6 +79,8 @@ class RegClassOps
     /** Print the value of a register pointed to by val of size size. */
     virtual std::string valString(const void *val, size_t size) const;
 };
+
+class RegClassIterator;
 
 class RegClass
 {
@@ -121,6 +124,11 @@ class RegClass
     {
         return _ops->valString(val, regBytes());
     }
+
+    using iterator = RegClassIterator;
+
+    inline iterator begin() const;
+    inline iterator end() const;
 };
 
 /** Register ID: describe an architectural register with its class and index.
@@ -137,6 +145,7 @@ class RegId
     int numPinnedWrites;
 
     friend struct std::hash<RegId>;
+    friend class RegClassIterator;
 
   public:
     constexpr RegId() : RegId(InvalidRegClass, 0) {}
@@ -210,6 +219,67 @@ class RegId
         return os << rid.className() << "{" << rid.index() << "}";
     }
 };
+
+class RegClassIterator
+{
+  private:
+    RegId id;
+
+    RegClassIterator(const RegClass &reg_class, RegIndex idx=0) :
+        id(reg_class.type(), idx)
+    {}
+
+    friend class RegClass;
+
+  public:
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type = std::size_t;
+    using value_type = const RegId;
+    using pointer = value_type *;
+    using reference = value_type &;
+
+    reference operator*() const { return id; }
+    pointer operator->() { return &id; }
+
+    RegClassIterator &
+    operator++()
+    {
+        id.regIdx++;
+        return *this;
+    }
+
+    RegClassIterator
+    operator++(int)
+    {
+        auto tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+
+    bool
+    operator==(const RegClassIterator &other) const
+    {
+        return id == other.id;
+    }
+
+    bool
+    operator!=(const RegClassIterator &other) const
+    {
+        return id != other.id;
+    }
+};
+
+RegClassIterator
+RegClass::begin() const
+{
+    return RegClassIterator(*this, 0);
+}
+
+RegClassIterator
+RegClass::end() const
+{
+    return RegClassIterator(*this, numRegs());
+}
 
 template <typename ValueType>
 class TypedRegClassOps : public RegClassOps
