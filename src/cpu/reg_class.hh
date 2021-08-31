@@ -129,6 +129,8 @@ class RegClass
 
     inline iterator begin() const;
     inline iterator end() const;
+
+    inline constexpr RegId operator[](RegIndex idx) const;
 };
 
 /** Register ID: describe an architectural register with its class and index.
@@ -279,6 +281,12 @@ RegClassIterator
 RegClass::end() const
 {
     return RegClassIterator(*this, numRegs());
+}
+
+constexpr RegId
+RegClass::operator[](RegIndex idx) const
+{
+    return RegId(type(), idx);
 }
 
 template <typename ValueType>
