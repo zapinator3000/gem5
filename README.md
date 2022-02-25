@@ -1,3 +1,9 @@
+## THIS IS A FORK OF THE OFFICAL GEM5 AS OF 2/24/2022
+## THIS IS KNOWN TO WORK WITH ZORO. 
+
+## Please see updated versions! in the official GEM5 repository
+
+
 This is the gem5 simulator.
 
 The main website can be found at http://www.gem5.org
