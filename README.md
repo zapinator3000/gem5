@@ -1,5 +1,6 @@
 ## THIS IS A FORK OF THE OFFICAL GEM5 AS OF 2/24/2022
-## THIS IS KNOWN TO WORK WITH ZORO. 
+### The purpose of this fork is to ensure future compatability with the a specific research project, ZORO
+### ZORO has not been documented yet so will not be mentioned here
 
 ## Please see updated versions! in the official GEM5 repository
 
